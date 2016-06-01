@@ -3,6 +3,27 @@
     display: inline-block;
 }
 
+.ba-notice {
+    background-color: green;
+    color: white;
+    font-size: 12px;
+}
+
+.ba-notice div {
+    display: inline;
+    margin: 10px;
+}
+
+.ba-notice button {
+    float: right;
+    width: 20px;
+    display: inline;
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
 /* --- IMAGE RESIZING --- */
 .aui-item.main .description img {
     width: 100px;

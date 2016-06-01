@@ -7,7 +7,7 @@ chrome.extension.sendMessage({}, function (response) {
 
     ////// GROUPING OF CONTENT IN DESCRIPTION /////////
 
-    function groupContent() {
+    (function groupContent() {
         var matches;
         while (matches = findMatches()) {
             var match = matches[0];
@@ -23,7 +23,7 @@ chrome.extension.sendMessage({}, function (response) {
             var updated = document.querySelector('.aui-item.main .description');
             updated.innerHTML = updated.innerHTML.replace(match, wrapped);
         }
-    }
+    })();
 
     function findMatches() {
         var inner = document.querySelector('.aui-item.main .description');
@@ -33,7 +33,24 @@ chrome.extension.sendMessage({}, function (response) {
         return false;
     }
 
-    groupContent();
+    /**
+     * Inserts a help notice to the /pull-requests/new page.
+     */
+    (function insertNotice() {
+        if(!localStorage.getItem('ba.hideNotice')){
+            var container = document.querySelector('.markItUpContainer')
+            var notice = document.createElement('div');
+            notice.classList.add('ba-notice');
+            notice.innerHTML = '<div>You can now group content by using "{}" braces</div><button>✕</button>';
+            var textarea = container.querySelector('textarea');
+            var button = notice.querySelector('button');
+            button.addEventListener('click', e => {
+                localStorage.setItem('ba.hideNotice','true')
+                notice.classList.add('hidden');
+            });
+            container.insertBefore(notice, textarea);
+        }
+    })();
 
     ////// COMMENT COLLAPSING ////////
 
