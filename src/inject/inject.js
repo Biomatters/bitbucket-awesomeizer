@@ -37,18 +37,22 @@ chrome.extension.sendMessage({}, function (response) {
      * Inserts a help notice to the /pull-requests/new page.
      */
     (function insertNotice() {
-        if(!localStorage.getItem('ba.hideNotice')){
-            var container = document.querySelector('.markItUpContainer')
-            var notice = document.createElement('div');
-            notice.classList.add('ba-notice');
-            notice.innerHTML = '<div>You can now group content by using "{}" braces</div><button>✕</button>';
-            var textarea = container.querySelector('textarea');
-            var button = notice.querySelector('button');
-            button.addEventListener('click', e => {
-                localStorage.setItem('ba.hideNotice','true')
-                notice.classList.add('hidden');
-            });
-            container.insertBefore(notice, textarea);
+        // Let developers hide the notice once they've read it.
+        if (!localStorage.getItem('ba.hideNotice')) {
+            var container = document.querySelector('.markItUpContainer');
+            // Check container is present no this page.
+            if (container) {
+                var notice = document.createElement('div');
+                notice.classList.add('ba-notice');
+                notice.innerHTML = '<div>You can now group content by using "{}" braces</div><button>✕</button>';
+                var textarea = container.querySelector('textarea');
+                var button = notice.querySelector('button');
+                button.addEventListener('click', e => {
+                    localStorage.setItem('ba.hideNotice', 'true');
+                    notice.classList.add('hidden');
+                });
+                container.insertBefore(notice, textarea);
+            }
         }
     })();
 
