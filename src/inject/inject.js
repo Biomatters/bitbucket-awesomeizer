@@ -1,8 +1,62 @@
 chrome.extension.sendMessage({}, function (response) {
     // TODO Refactor as a jQuery plugin, and apply it to each comment thread container element, such that `this` is the container element.  This is probably simpler code, but may be less performant (with polling)?
 
-    var link = 'https://chrome.google.com/webstore/detail/bitbucket-awesomizer/fpcpncnhbbmlmhgicafejpabkdjenloi';
-    var commentMarkdown = `[Resolved.](${link} "Resolved with Bitbucket Awesomizr")`;
+    let DOWNLOAD_LINK = 'https://chrome.google.com/webstore/detail/bitbucket-awesomizer/fpcpncnhbbmlmhgicafejpabkdjenloi';
+    let COMMENT_MARKDOWN = `[Resolved.](${DOWNLOAD_LINK} "Resolved with Bitbucket Awesomizr")`;
+
+
+    ////// GROUPING OF CONTENT IN DESCRIPTION /////////
+
+    (function groupContent() {
+        var matches;
+        while (matches = findMatches()) {
+            var match = matches[0];
+            // Remove first brace.
+            var first = 1 + match.indexOf('{');
+            var content = match.substring(first);
+            // Remove last brace.
+            var last = content.lastIndexOf('}');
+            content = content.substring(0, last);
+            // Wrap in a div for formatting.
+            var wrapped = `<div class="ba-container ">${content}</div>`;
+            // Inject back into the DOM.
+            var updated = document.querySelector('.aui-item.main .description');
+            updated.innerHTML = updated.innerHTML.replace(match, wrapped);
+        }
+    })();
+
+    function findMatches() {
+        var inner = document.querySelector('.aui-item.main .description');
+        if (inner) {
+            return inner.innerHTML.match(/{[^}]*}/);
+        }
+        return false;
+    }
+
+    /**
+     * Inserts a help notice to the /pull-requests/new page.
+     */
+    (function insertNotice() {
+        // Let developers hide the notice once they've read it.
+        if (!localStorage.getItem('ba.hideNotice')) {
+            var container = document.querySelector('.markItUpContainer');
+            // Check container is present no this page.
+            if (container) {
+                var notice = document.createElement('div');
+                notice.classList.add('ba-notice');
+                notice.innerHTML = '<div>You can now group content by using "{}" braces</div><button>✕</button>';
+                var textarea = container.querySelector('textarea');
+                var button = notice.querySelector('button');
+                button.addEventListener('click', e => {
+                    localStorage.setItem('ba.hideNotice', 'true');
+                    notice.classList.add('hidden');
+                });
+                container.insertBefore(notice, textarea);
+            }
+        }
+    })();
+
+    ////// COMMENT COLLAPSING ////////
 
     function init() {
         // Handles click events on "toggle" buttons.
@@ -21,7 +75,7 @@ chrome.extension.sendMessage({}, function (response) {
         $(document).on('click', 'button.ba-resolve-button', e => {
             var $container = getClosestThreadContainer(e.target);
             $container.find('.reply-link.execute.click')[0].click();
-            $container.find('#id_new_comment').text(commentMarkdown);
+            $container.find('#id_new_comment').text(COMMENT_MARKDOWN);
             $container.find('button[type="submit"].aui-button').click();
             $container.find('button.ba-resolve-button').remove();
 

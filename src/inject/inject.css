@@ -1,22 +1,55 @@
+/* --- CONTENT GROUPING --- */
+.ba-container {
+    display: inline-block;
+}
+
+.ba-notice {
+    background-color: green;
+    color: white;
+    font-size: 12px;
+}
+
+.ba-notice div {
+    display: inline;
+    margin: 10px;
+}
+
+.ba-notice button {
+    float: right;
+    width: 20px;
+    display: inline;
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* --- IMAGE RESIZING --- */
+.aui-item.main .description img {
+    width: 100px;
+}
+
+/* --- COMMENTS --- */
 .comment-thread-container {
-  position: relative;
+    position: relative;
 }
 
 .comment-thread-container.ba-hidden {
-  position: relative;
-  padding: 0;
+    position: relative;
+    padding: 0;
 }
 
 .comment-thread-container .ba-container {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 10px;
 }
 
 .ba-hidden .comments-list {
-  display: none;
+    display: none;
 }
+
 .ba-hidden .ba-resolve-button {
-  display: none;
+    display: none;
 }
