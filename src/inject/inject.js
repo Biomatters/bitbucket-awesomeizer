@@ -16,6 +16,17 @@ chrome.extension.sendMessage({}, function (response) {
             updateUi($container);
         });
 
+        // Handles click events on the previous and next buttons.
+        $(document).on('click', 'button.ba-navigate', e => {
+            var $e = $(e.target);
+            var $parent = $e.closest('.ba-container');
+            var $container = $parent.closest('.diff-container');
+            var $comments = $container.find('.ba-container');
+            var start = $comments.index($parent), off = $e.hasClass('ba-nav-down') ? +1 : -1, leng = $comments.length;
+            var index = (start + off + leng) % leng; // wrap around.
+            $('html, body').animate({ scrollTop: $($comments[index]).offset().top }, 400); 
+        });
+
         // Handles click events on "resolve" buttons.
         // TODO As a jQuery plugin, this attaches to the button when it is created.
         $(document).on('click', 'button.ba-resolve-button', e => {
@@ -102,7 +113,9 @@ chrome.extension.sendMessage({}, function (response) {
         // The "toggle" button's label is set in updateButtons.
         var toggle = '<button class="ba-hide-comment-button">Toggle</button>';
         var resolve = resolved ? '' : '<button class="ba-resolve-button">Resolve</button>';
-        $container.prepend(`<div class="ba-container">${toggle} ${resolve}</div>`);
+        var prev = '<button class="ba-navigate ba-nav-up">\u25B3</button>';
+        var next = '<button class="ba-navigate ba-nav-down">\u25BD</button>';
+        $container.prepend(`<div class="ba-container">${toggle} ${resolve} ${prev} ${next}</div>`);
     }
 
     function getClosestThreadContainer(element) {
